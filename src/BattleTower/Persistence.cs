@@ -1,0 +1,94 @@
+using System.Text.Json;
+using DataStructures;
+
+namespace BattleTower;
+
+internal sealed record CharacterData(string Name, int Health, int Strength, int Defense, int MagicPower, int MagicBarrier, int Energy);
+
+/// <summary>Everything needed to continue a run, including the score and the enemies already defeated.</summary>
+internal sealed record SaveData(CharacterData Player, CharacterData CurrentEnemy, List<CharacterData> WaitingEnemies, int Score, int DefeatedEnemies);
+
+public sealed record ScoreEntry(string PlayerName, int Points, int Enemies, DateTime Date);
+
+/// <summary>Saves and loads runs as JSON. Missing or corrupt files are reported instead of crashing the game.</summary>
+public static class SaveGame
+{
+    private static readonly JsonSerializerOptions Options = new() { WriteIndented = true };
+
+    public static void Save(TowerRun run, string path) =>
+        File.WriteAllText(path, JsonSerializer.Serialize(run.ToSaveData(), Options));
+
+    public static bool TryLoad(string path, Dice dice, out TowerRun? run, out string? error)
+    {
+        run = null;
+        error = null;
+        if (!File.Exists(path))
+        {
+            error = "There is no saved game yet.";
+            return false;
+        }
+
+        try
+        {
+            SaveData? data = JsonSerializer.Deserialize<SaveData>(File.ReadAllText(path));
+            if (data is null)
+            {
+                error = "The saved game is empty.";
+                return false;
+            }
+
+            run = TowerRun.FromSaveData(data, dice);
+            return true;
+        }
+        catch (Exception ex) when (ex is JsonException or ArgumentException)
+        {
+            error = $"The saved game is corrupt: {ex.Message}";
+            return false;
+        }
+    }
+}
+
+/// <summary>
+/// High scores kept in a <see cref="SortedLinkedList{T}"/> ordered from best to worst,
+/// from the DataStructures library.
+/// </summary>
+public sealed class HighScoreTable
+{
+    private static readonly IComparer<ScoreEntry> BestFirst =
+        Comparer<ScoreEntry>.Create((a, b) => b.Points.CompareTo(a.Points));
+
+    private readonly SortedLinkedList<ScoreEntry> _entries = new(BestFirst);
+
+    public IReadOnlyCollection<ScoreEntry> Entries => _entries;
+
+    public void Add(ScoreEntry entry) => _entries.Add(entry);
+
+    public IEnumerable<ScoreEntry> Top(int count) => _entries.Take(count);
+
+    public void Save(string path) =>
+        File.WriteAllText(path, JsonSerializer.Serialize(_entries.ToList(), new JsonSerializerOptions { WriteIndented = true }));
+
+    /// <summary>Returns an empty table when the file does not exist or cannot be read.</summary>
+    public static HighScoreTable Load(string path)
+    {
+        var table = new HighScoreTable();
+        if (!File.Exists(path))
+        {
+            return table;
+        }
+
+        try
+        {
+            foreach (ScoreEntry entry in JsonSerializer.Deserialize<List<ScoreEntry>>(File.ReadAllText(path)) ?? [])
+            {
+                table.Add(entry);
+            }
+        }
+        catch (JsonException)
+        {
+            // A corrupt file just means starting a new table.
+        }
+
+        return table;
+    }
+}
