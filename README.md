@@ -7,6 +7,9 @@ refactored into a single .NET solution: one menu-driven app with 29 exercises, a
 generic data structures with its own demo app, three two-player board games and **Battle Tower**, a turn-based RPG.
 All of it is covered by unit tests that run on every push.
 
+Part 1 of my university C# work. Part 2, object-oriented programming and Windows Forms games:
+[VS_CSharp-WinForms-Games](https://github.com/miguelrg14/VS_CSharp-WinForms-Games).
+
 ## Projects
 
 | Project | Type | What it shows |
@@ -18,6 +21,12 @@ All of it is covered by unit tests that run on every push.
 | [`src/Fundamentals`](src/Fundamentals) | Console app | 29 exercises in 6 categories, launched from a menu |
 | [`src/ConsoleUtils`](src/ConsoleUtils) | Class library | Validated console input (`ReadInt`, `ReadDouble`, `ReadYesNo`...) and numbered menus |
 | [`tests/*`](tests) | xUnit | About 150 tests for the data structures, the exercise logic, the game rules and Battle Tower |
+
+## Download
+
+Ready-to-run builds for Windows, Linux and macOS are on the [Releases page](https://github.com/miguelrg14/VS_CSharp-Fundamentals/releases/latest).
+Extract the archive for your system and run `BattleTower`, `Games`, `Fundamentals` or `DataStructures.Demo` from a terminal;
+no .NET installation is needed. (On macOS the apps are not signed: the first time, right-click the file and choose *Open*.)
 
 ## Getting started
 
@@ -78,7 +87,8 @@ testing lives in public static methods, so the console part of each exercise sta
 - Package versions managed centrally in `Directory.Packages.props`.
 - User input is always validated (`TryParse` instead of `Convert.ToInt32`), files are opened with `using`,
   and missing or corrupt save files are reported instead of crashing.
-- GitHub Actions builds the solution and runs the tests on every push and pull request.
+- GitHub Actions builds the solution and runs the tests on every push and pull request; pushing a version tag
+  (`git tag v1.0.0 && git push origin v1.0.0`) publishes trimmed, self-contained executables to Releases.
 
 ## License
 

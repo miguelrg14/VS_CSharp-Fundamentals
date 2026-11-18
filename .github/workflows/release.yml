@@ -7,8 +7,6 @@ on:
   push:
     tags:
       - "v*"
-    branches:
-      - release-workflow # TEMPORARY: verifies the build; removed before merging.
 
 permissions:
   contents: write # Needed to create the release.
@@ -46,7 +44,8 @@ jobs:
           cp README.md LICENSE publish/
 
       # Trimming removes code the compiler thinks is unused, so the real executable is run once:
-      # it starts a game, saves it, quits, and then continues the saved game.
+      # it starts a game, saves it, quits, and then continues the saved game. The menus of
+      # the other apps are opened and closed too.
       - name: Smoke test the trimmed Battle Tower
         if: matrix.runtime == 'linux-x64'
         working-directory: publish
@@ -56,7 +55,7 @@ jobs:
           test -f battletower-save.json
           printf '2\n0\n0\n' | ./BattleTower > second-run.txt
           grep -q "stands in front of you" second-run.txt
-          printf '3\n1\n0\n0\n4\n0\n0\n' | ./Games > /dev/null
+          for app in Games Fundamentals DataStructures.Demo; do printf '0\n' | ./$app > /dev/null; done
           rm -f battletower-save.json first-run.txt second-run.txt
 
       - name: Package
