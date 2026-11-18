@@ -1,6 +1,6 @@
 # C# Fundamentals
 
-[![Build & Test](https://github.com/miguelrg14/VS_Console_Examples/actions/workflows/dotnet.yml/badge.svg)](https://github.com/miguelrg14/VS_Console_Examples/actions/workflows/dotnet.yml)
+[![Build & Test](https://github.com/miguelrg14/VS_CSharp-Fundamentals/actions/workflows/dotnet.yml/badge.svg)](https://github.com/miguelrg14/VS_CSharp-Fundamentals/actions/workflows/dotnet.yml)
 
 C# console projects from my first year of Computer Science & Video Game Engineering at ESNE (2020–2021),
 refactored into a single .NET solution: one menu-driven app with 29 exercises, a reusable library of
@@ -24,8 +24,8 @@ All of it is covered by unit tests that run on every push.
 Requires the [.NET 10 SDK](https://dotnet.microsoft.com/download).
 
 ```bash
-git clone https://github.com/miguelrg14/VS_Console_Examples.git
-cd VS_Console_Examples
+git clone https://github.com/miguelrg14/VS_CSharp-Fundamentals.git
+cd VS_CSharp-Fundamentals
 
 dotnet run --project src/BattleTower           # the RPG
 dotnet run --project src/Games                 # tic-tac-toe, Connect Four, Battleship
