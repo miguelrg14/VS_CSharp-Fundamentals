@@ -7,8 +7,9 @@ refactored into a single .NET solution: one menu-driven app with 29 exercises, a
 generic data structures with its own demo app, three two-player board games and **Battle Tower**, a turn-based RPG.
 All of it is covered by unit tests that run on every push.
 
-Part 1 of my university C# work. Part 2, object-oriented programming and Windows Forms games:
-[VS_CSharp-WinForms-Games](https://github.com/miguelrg14/VS_CSharp-WinForms-Games).
+Part 1 of my university C# work. Also see
+[VS_CSharp-WinForms-Games](https://github.com/miguelrg14/VS_CSharp-WinForms-Games) (part 2: OOP and Windows Forms games) and
+[VS_CSharp-Networking](https://github.com/miguelrg14/VS_CSharp-Networking) (part 3: TCP group chat, threads and sockets).
 
 ## Projects
 
