@@ -123,6 +123,11 @@ public sealed class AddressBook : IExercise
             return;
         }
 
+        if (contacts.Count > 0 && !ConsoleInput.ReadYesNo($"Importing replaces the {contacts.Count} contact(s) in memory. Continue?"))
+        {
+            return;
+        }
+
         int skipped = 0;
         contacts.Clear();
         foreach (string line in File.ReadLines(FileName))

@@ -39,14 +39,17 @@ public sealed class PopulationStats : IExercise
 
     public static bool TryParseGroup(string text, out Group group)
     {
-        switch (text.Trim().ToUpperInvariant())
+        Group? parsed = text.Trim().ToUpperInvariant() switch
         {
-            case "B": group = Group.Boy; return true;
-            case "G": group = Group.Girl; return true;
-            case "M": group = Group.Man; return true;
-            case "W": group = Group.Woman; return true;
-            default: group = default; return false;
-        }
+            "B" => Group.Boy,
+            "G" => Group.Girl,
+            "M" => Group.Man,
+            "W" => Group.Woman,
+            _ => null,
+        };
+
+        group = parsed.GetValueOrDefault();
+        return parsed.HasValue;
     }
 
     /// <summary>Count and percentage of every group (0% when nobody belongs to it).</summary>

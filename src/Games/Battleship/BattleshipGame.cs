@@ -27,6 +27,13 @@ public static class BattleshipGame
 
             Coordinate shot = ReadCoordinate("Fire at (e.g. B3):");
             ShotResult result = target.Fire(shot);
+            if (target.AllShipsSunk)
+            {
+                Console.Write(target.Render(revealShips: true));
+                Console.WriteLine($"Hit and sunk! Player {shooter + 1} sank the whole fleet and wins!");
+                return;
+            }
+
             Console.WriteLine(result switch
             {
                 ShotResult.Miss => "Splash... miss.",
@@ -34,13 +41,6 @@ public static class BattleshipGame
                 ShotResult.Sunk => "Hit and sunk! Shoot again.",
                 _ => "You already fired there. Try another cell.",
             });
-
-            if (target.AllShipsSunk)
-            {
-                Console.Write(target.Render(revealShips: true));
-                Console.WriteLine($"Player {shooter + 1} sank the whole fleet and wins!");
-                return;
-            }
 
             if (result == ShotResult.Miss)
             {

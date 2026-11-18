@@ -1,6 +1,5 @@
 using Fundamentals.Exercises.Basics;
 using Fundamentals.Exercises.ControlFlow;
-using Fundamentals.Exercises.DataStructureDemos;
 using Fundamentals.Exercises.Files;
 using Fundamentals.Exercises.Methods;
 using Fundamentals.Exercises.MiniApps;
@@ -8,7 +7,10 @@ using Fundamentals.Exercises.StringsAndArrays;
 
 namespace Fundamentals;
 
-/// <summary>Every exercise in the app, grouped in the order they were studied.</summary>
+/// <summary>
+/// Every exercise in the app, grouped in the order they were studied.
+/// The data structures that come next have their own runnable project, DataStructures.Demo.
+/// </summary>
 public static class ExerciseCatalog
 {
     public static IReadOnlyList<ExerciseCategory> Categories { get; } =
@@ -59,14 +61,6 @@ public static class ExerciseCatalog
             new Calculator(),
             new AddressBook(),
             new VideoGameStore(),
-        ]),
-        new("Data structures",
-        [
-            new StackPlayground(),
-            new PriorityQueueDemo(),
-            new SortedListDemo(),
-            new DoublyLinkedListDemo(),
-            new CircularNamesList(),
         ]),
     ];
 }

@@ -1,9 +1,8 @@
 using ConsoleUtils;
-using DataStructures;
 
-namespace Fundamentals.Exercises.DataStructureDemos;
+namespace DataStructures.Demo.Playgrounds;
 
-public sealed class SortedListDemo : IExercise
+public sealed class SortedListPlayground : IPlayground
 {
     private static readonly string[] Options = ["Add a value", "Remove one occurrence", "Remove every occurrence", "Add 10 random values", "Clear"];
 

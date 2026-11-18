@@ -96,6 +96,36 @@ public sealed class LinkedStack<T> : IReadOnlyCollection<T>
     }
 
     /// <summary>
+    /// Finds the largest value and its 1-based position counted from the top
+    /// (the first one wins when several are equal). Returns <c>false</c> when the stack is empty.
+    /// </summary>
+    public bool TryGetMax([MaybeNullWhen(false)] out T max, out int position, IComparer<T>? comparer = null)
+    {
+        if (_top is null)
+        {
+            max = default;
+            position = 0;
+            return false;
+        }
+
+        comparer ??= Comparer<T>.Default;
+        max = _top.Value;
+        position = 1;
+        int current = 1;
+        for (Node? node = _top.Next; node is not null; node = node.Next)
+        {
+            current++;
+            if (comparer.Compare(node.Value, max) > 0)
+            {
+                max = node.Value;
+                position = current;
+            }
+        }
+
+        return true;
+    }
+
+    /// <summary>
     /// Swaps the value on top of the stack with the largest value in the stack.
     /// Returns <c>false</c> when the stack is empty.
     /// </summary>

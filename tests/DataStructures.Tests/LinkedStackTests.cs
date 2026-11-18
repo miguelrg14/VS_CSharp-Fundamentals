@@ -76,6 +76,27 @@ public class LinkedStackTests
     }
 
     [Fact]
+    public void TryGetMax_ReportsTheValueAndItsPositionFromTheTop()
+    {
+        var stack = new LinkedStack<int>([4, 8, 1, 8]); // top -> bottom: 8, 1, 8, 4
+
+        Assert.True(stack.TryGetMax(out int max, out int position));
+        Assert.Equal(8, max);
+        Assert.Equal(1, position); // The first maximum from the top wins.
+
+        stack.Pop();
+        Assert.True(stack.TryGetMax(out max, out position));
+        Assert.Equal((8, 2), (max, position));
+    }
+
+    [Fact]
+    public void TryGetMax_OnEmptyStack_ReturnsFalse()
+    {
+        Assert.False(new LinkedStack<int>().TryGetMax(out _, out int position));
+        Assert.Equal(0, position);
+    }
+
+    [Fact]
     public void SwapTopWithMax_OnEmptyStack_ReturnsFalse()
     {
         Assert.False(new LinkedStack<int>().SwapTopWithMax());

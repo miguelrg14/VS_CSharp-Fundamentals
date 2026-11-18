@@ -1,9 +1,8 @@
 using ConsoleUtils;
-using DataStructures;
 
-namespace Fundamentals.Exercises.DataStructureDemos;
+namespace DataStructures.Demo.Playgrounds;
 
-public sealed class PriorityQueueDemo : IExercise
+public sealed class PriorityQueuePlayground : IPlayground
 {
     private static readonly string[] Options =
     [

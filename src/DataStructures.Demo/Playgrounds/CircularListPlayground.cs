@@ -1,9 +1,8 @@
 using ConsoleUtils;
-using DataStructures;
 
-namespace Fundamentals.Exercises.DataStructureDemos;
+namespace DataStructures.Demo.Playgrounds;
 
-public sealed class CircularNamesList : IExercise
+public sealed class CircularListPlayground : IPlayground
 {
     private const string EndWord = "END";
 
@@ -14,9 +13,14 @@ public sealed class CircularNamesList : IExercise
     public void Run()
     {
         var names = new CircularLinkedList<string>();
-        string name;
-        while (!(name = ConsoleInput.ReadString($"Name ({EndWord} to finish):")).Equals(EndWord, StringComparison.OrdinalIgnoreCase))
+        while (true)
         {
+            string name = ConsoleInput.ReadString($"Name ({EndWord} to finish):");
+            if (name.Equals(EndWord, StringComparison.OrdinalIgnoreCase))
+            {
+                break;
+            }
+
             names.Add(name);
         }
 

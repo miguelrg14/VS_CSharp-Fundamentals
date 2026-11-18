@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using DataStructures;
 
@@ -13,12 +14,15 @@ public sealed record ScoreEntry(string PlayerName, int Points, int Enemies, Date
 /// <summary>Saves and loads runs as JSON. Missing or corrupt files are reported instead of crashing the game.</summary>
 public static class SaveGame
 {
-    private static readonly JsonSerializerOptions Options = new() { WriteIndented = true };
+    internal static readonly JsonSerializerOptions Options = new() { WriteIndented = true };
 
     public static void Save(TowerRun run, string path) =>
         File.WriteAllText(path, JsonSerializer.Serialize(run.ToSaveData(), Options));
 
-    public static bool TryLoad(string path, Dice dice, out TowerRun? run, out string? error)
+    /// <summary>A finished run is deleted so it cannot be continued (and scored) again.</summary>
+    public static void Delete(string path) => File.Delete(path);
+
+    public static bool TryLoad(string path, Dice dice, [NotNullWhen(true)] out TowerRun? run, [NotNullWhen(false)] out string? error)
     {
         run = null;
         error = null;
@@ -45,6 +49,11 @@ public static class SaveGame
             error = $"The saved game is corrupt: {ex.Message}";
             return false;
         }
+        catch (IOException ex)
+        {
+            error = $"The saved game could not be read: {ex.Message}";
+            return false;
+        }
     }
 }
 
@@ -66,7 +75,7 @@ public sealed class HighScoreTable
     public IEnumerable<ScoreEntry> Top(int count) => _entries.Take(count);
 
     public void Save(string path) =>
-        File.WriteAllText(path, JsonSerializer.Serialize(_entries.ToList(), new JsonSerializerOptions { WriteIndented = true }));
+        File.WriteAllText(path, JsonSerializer.Serialize(_entries.ToList(), SaveGame.Options));
 
     /// <summary>Returns an empty table when the file does not exist or cannot be read.</summary>
     public static HighScoreTable Load(string path)
@@ -84,9 +93,9 @@ public sealed class HighScoreTable
                 table.Add(entry);
             }
         }
-        catch (JsonException)
+        catch (Exception ex) when (ex is JsonException or IOException)
         {
-            // A corrupt file just means starting a new table.
+            // An unreadable file just means starting a new table.
         }
 
         return table;

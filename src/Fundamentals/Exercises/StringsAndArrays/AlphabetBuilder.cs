@@ -24,9 +24,14 @@ public sealed class AlphabetBuilder : IExercise
 
         Console.WriteLine();
         var word = new StringBuilder();
-        int index;
-        while ((index = ConsoleInput.ReadInt($"Letter index (0-{Alphabet.Length - 1}, -1 to finish):", -1, Alphabet.Length - 1)) != -1)
+        while (true)
         {
+            int index = ConsoleInput.ReadInt($"Letter index (0-{Alphabet.Length - 1}, -1 to finish):", -1, Alphabet.Length - 1);
+            if (index == -1)
+            {
+                break;
+            }
+
             word.Append(Alphabet[index]);
             Console.WriteLine($"So far: {word}");
         }

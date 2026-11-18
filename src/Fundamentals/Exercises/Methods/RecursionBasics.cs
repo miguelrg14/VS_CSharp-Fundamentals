@@ -21,11 +21,12 @@ public sealed class RecursionBasics : IExercise
         Console.WriteLine($"{n}! = {FactorialIterative(n)} (iterative)");
     }
 
-    /// <summary>Base case: 0. Recursive case: the number followed by the countdown from number - 1.</summary>
-    public static IEnumerable<int> Countdown(int from)
+    public static IReadOnlyList<int> Countdown(int from)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(from);
-        return from == 0 ? [0] : [from, .. Countdown(from - 1)];
+        var numbers = new List<int>(from + 1);
+        AddCountdown(from, numbers);
+        return numbers;
     }
 
     /// <summary>
@@ -36,6 +37,19 @@ public sealed class RecursionBasics : IExercise
         ArgumentOutOfRangeException.ThrowIfNegative(n);
         ArgumentOutOfRangeException.ThrowIfGreaterThan(n, MaxFactorialInput);
         return n == 0 ? 1 : n * FactorialRecursive(n - 1);
+    }
+
+    /// <summary>
+    /// Base case: 0 is added and the recursion stops. Recursive case: add the number, then count down from number - 1.
+    /// The list is passed along so every call appends to the same one instead of copying it.
+    /// </summary>
+    private static void AddCountdown(int number, List<int> numbers)
+    {
+        numbers.Add(number);
+        if (number > 0)
+        {
+            AddCountdown(number - 1, numbers);
+        }
     }
 
     public static long FactorialIterative(int n)

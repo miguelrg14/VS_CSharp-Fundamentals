@@ -1,10 +1,9 @@
 using System.Globalization;
 using ConsoleUtils;
-using DataStructures;
 
-namespace Fundamentals.Exercises.DataStructureDemos;
+namespace DataStructures.Demo.Playgrounds;
 
-public sealed class StackPlayground : IExercise
+public sealed class StackPlayground : IPlayground
 {
     public const string FileName = "stack.txt";
 
@@ -14,7 +13,7 @@ public sealed class StackPlayground : IExercise
         "Contains?", "Reverse", "Save to file", "Load from file", "Clear",
     ];
 
-    public string Title => "Stack playground";
+    public string Title => "Stack";
 
     public string Description => "Every operation of LinkedStack<T>, a stack built on a singly linked list.";
 
@@ -35,7 +34,7 @@ public sealed class StackPlayground : IExercise
                     Console.WriteLine(stack.TryPeek(out int top) ? $"Top: {top}." : "The stack is empty.");
                     break;
                 case 3:
-                    Console.WriteLine(FindMax(stack) is (int max, int position)
+                    Console.WriteLine(stack.TryGetMax(out int max, out int position)
                         ? $"Maximum: {max}, at position {position} from the top."
                         : "The stack is empty.");
                     break;
@@ -63,24 +62,6 @@ public sealed class StackPlayground : IExercise
         }
     }
 
-    /// <summary>The largest value and its 1-based position counted from the top, or null if the stack is empty.</summary>
-    public static (int Max, int Position)? FindMax(LinkedStack<int> stack)
-    {
-        (int Max, int Position)? best = null;
-        int position = 1;
-        foreach (int value in stack)
-        {
-            if (best is null || value > best.Value.Max)
-            {
-                best = (value, position);
-            }
-
-            position++;
-        }
-
-        return best;
-    }
-
     private static void Load(LinkedStack<int> stack)
     {
         if (!File.Exists(FileName))
@@ -89,10 +70,21 @@ public sealed class StackPlayground : IExercise
             return;
         }
 
+        var values = new List<int>();
+        foreach (string line in File.ReadLines(FileName))
+        {
+            if (!int.TryParse(line, NumberStyles.Integer, CultureInfo.InvariantCulture, out int value))
+            {
+                Console.WriteLine($"{FileName} is corrupt (\"{line}\" is not a number). The stack was not changed.");
+                return;
+            }
+
+            values.Add(value);
+        }
+
         // The file lists the values from top to bottom, so they are pushed in reverse order.
-        int[] values = [.. File.ReadLines(FileName).Select(line => int.Parse(line, CultureInfo.InvariantCulture))];
         stack.Clear();
-        for (int i = values.Length - 1; i >= 0; i--)
+        for (int i = values.Count - 1; i >= 0; i--)
         {
             stack.Push(values[i]);
         }

@@ -34,12 +34,12 @@ public static class Program
                 case 0:
                     string name = ConsoleInput.ReadString("Your hero's name:");
                     int enemies = ConsoleInput.ReadInt("How many enemies will you face (1-10)?", 1, 10);
-                    Play(TowerRun.StartNew(name, enemies, GameDice));
+                    Play(TowerRun.StartNew(name, enemies, GameDice), loadedFromSave: false);
                     break;
                 case 1:
                     if (SaveGame.TryLoad(SavePath, GameDice, out TowerRun? run, out string? error))
                     {
-                        Play(run!);
+                        Play(run, loadedFromSave: true);
                     }
                     else
                     {
@@ -54,8 +54,9 @@ public static class Program
         }
     }
 
-    private static void Play(TowerRun run)
+    private static void Play(TowerRun run, bool loadedFromSave)
     {
+        bool usesSaveFile = loadedFromSave;
         Console.WriteLine($"{run.CurrentEnemy.Name} stands in front of you.");
         string[] actions = ["Attack", "Magic missile", "Analyze", "Rest", "Save game"];
         while (run.State == RunState.InProgress)
@@ -85,9 +86,17 @@ public static class Program
                     break;
                 case 4:
                     SaveGame.Save(run, SavePath);
+                    usesSaveFile = true;
                     Console.WriteLine($"Game saved to {Path.GetFullPath(SavePath)}.");
                     break;
             }
+        }
+
+        // The run is over: its save must not be continued (and scored) again.
+        // A save that belongs to a different run is left alone.
+        if (usesSaveFile)
+        {
+            SaveGame.Delete(SavePath);
         }
 
         if (run.State == RunState.Lost)

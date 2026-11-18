@@ -1,9 +1,7 @@
-using Fundamentals.Exercises.DataStructureDemos;
 using Fundamentals.Exercises.Files;
 using Fundamentals.Exercises.Methods;
 using Fundamentals.Exercises.MiniApps;
 using Fundamentals.Exercises.StringsAndArrays;
-using DataStructures;
 
 namespace Fundamentals.Tests;
 
@@ -226,14 +224,5 @@ public class FilesAndAppsTests
         Assert.Throws<InvalidOperationException>(() => game.Sell(11));
         game.Sell(10);
         Assert.Equal(0, game.Stock);
-    }
-
-    [Fact]
-    public void StackPlayground_FindMax_ReportsThePositionFromTheTop()
-    {
-        var stack = new LinkedStack<int>([4, 8, 1]); // top -> bottom: 1, 8, 4
-
-        Assert.Equal((8, 2), StackPlayground.FindMax(stack));
-        Assert.False(StackPlayground.FindMax(new LinkedStack<int>()).HasValue);
     }
 }

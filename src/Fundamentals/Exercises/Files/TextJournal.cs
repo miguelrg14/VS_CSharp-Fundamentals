@@ -21,24 +21,28 @@ public sealed class TextJournal : IExercise
             {
                 Console.WriteLine($"  {line}");
             }
+
+            if (ConsoleInput.ReadYesNo("Delete the current content and start again?"))
+            {
+                File.WriteAllText(path, string.Empty);
+            }
         }
         else
         {
             Console.WriteLine($"{path} does not exist yet; it will be created.");
         }
 
-        if (ConsoleInput.ReadYesNo("Start from an empty journal?"))
-        {
-            File.WriteAllText(path, string.Empty);
-        }
-
         // 'using' closes the file even if an exception is thrown while writing.
         using StreamWriter writer = File.AppendText(path);
         int added = 0;
-        string entry;
-        while (!(entry = ConsoleInput.ReadString($"New line (\"{ExitWord}\" to finish):", allowEmpty: true))
-                   .Equals(ExitWord, StringComparison.OrdinalIgnoreCase))
+        while (true)
         {
+            string entry = ConsoleInput.ReadString($"New line (\"{ExitWord}\" to finish):", allowEmpty: true);
+            if (entry.Equals(ExitWord, StringComparison.OrdinalIgnoreCase))
+            {
+                break;
+            }
+
             writer.WriteLine(entry);
             added++;
         }
