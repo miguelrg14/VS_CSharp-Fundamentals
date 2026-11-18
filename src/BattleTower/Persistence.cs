@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using DataStructures;
 
 namespace BattleTower;
@@ -11,13 +12,20 @@ internal sealed record SaveData(CharacterData Player, CharacterData CurrentEnemy
 
 public sealed record ScoreEntry(string PlayerName, int Points, int Enemies, DateTime Date);
 
+/// <summary>
+/// The JSON code is generated at compile time instead of using reflection at runtime. It is faster,
+/// and it lets the published executable be trimmed (unused framework code removed) without breaking saves.
+/// </summary>
+[JsonSourceGenerationOptions(WriteIndented = true)]
+[JsonSerializable(typeof(SaveData))]
+[JsonSerializable(typeof(List<ScoreEntry>))]
+internal sealed partial class BattleTowerJson : JsonSerializerContext;
+
 /// <summary>Saves and loads runs as JSON. Missing or corrupt files are reported instead of crashing the game.</summary>
 public static class SaveGame
 {
-    internal static readonly JsonSerializerOptions Options = new() { WriteIndented = true };
-
     public static void Save(TowerRun run, string path) =>
-        File.WriteAllText(path, JsonSerializer.Serialize(run.ToSaveData(), Options));
+        File.WriteAllText(path, JsonSerializer.Serialize(run.ToSaveData(), BattleTowerJson.Default.SaveData));
 
     /// <summary>A finished run is deleted so it cannot be continued (and scored) again.</summary>
     public static void Delete(string path) => File.Delete(path);
@@ -34,7 +42,7 @@ public static class SaveGame
 
         try
         {
-            SaveData? data = JsonSerializer.Deserialize<SaveData>(File.ReadAllText(path));
+            SaveData? data = JsonSerializer.Deserialize(File.ReadAllText(path), BattleTowerJson.Default.SaveData);
             if (data is null)
             {
                 error = "The saved game is empty.";
@@ -75,7 +83,7 @@ public sealed class HighScoreTable
     public IEnumerable<ScoreEntry> Top(int count) => _entries.Take(count);
 
     public void Save(string path) =>
-        File.WriteAllText(path, JsonSerializer.Serialize(_entries.ToList(), SaveGame.Options));
+        File.WriteAllText(path, JsonSerializer.Serialize(_entries.ToList(), BattleTowerJson.Default.ListScoreEntry));
 
     /// <summary>Returns an empty table when the file does not exist or cannot be read.</summary>
     public static HighScoreTable Load(string path)
@@ -88,7 +96,7 @@ public sealed class HighScoreTable
 
         try
         {
-            foreach (ScoreEntry entry in JsonSerializer.Deserialize<List<ScoreEntry>>(File.ReadAllText(path)) ?? [])
+            foreach (ScoreEntry entry in JsonSerializer.Deserialize(File.ReadAllText(path), BattleTowerJson.Default.ListScoreEntry) ?? [])
             {
                 table.Add(entry);
             }
