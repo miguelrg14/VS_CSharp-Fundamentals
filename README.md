@@ -48,6 +48,8 @@ Or open `CSharpFundamentals.sln` in Visual Studio / Rider and pick a startup pro
 
 ## Battle Tower
 
+![A game of Battle Tower: new hero, analyze the enemy, attack, rest, magic missile, victory and high scores](docs/battle-tower-demo.gif)
+
 Choose how many enemies to face (1–10) and climb the tower fighting them one by one. Every character has
 randomly rolled health, strength, defense, magic power, magic barrier and energy.
 
@@ -67,7 +69,22 @@ Design notes:
   `DataStructures` library.
 - All randomness goes through `Dice`, which takes a `Random`; tests pass a seeded one so runs are reproducible.
 
+## Two-player games
+
+Tic-tac-toe, Connect Four and Battleship, played on the same keyboard. The rules (placing pieces, checking for a
+winner, sinking ships) live in board classes with no console code, so they are unit tested.
+
+![A game of Connect Four in which Red connects four in the bottom row](docs/connect-four-demo.gif)
+
+## Data structures
+
+Generic collections written from scratch on linked nodes. The demo app's guided tour shows each one at work:
+
+![Guided tour of the data structures: stack, queue, sorted list, doubly linked list, circular list](docs/data-structures-demo.gif)
+
 ## Exercises
+
+![The exercise menu: Methods & recursion, then the Fibonacci exercise](docs/fundamentals-demo.gif)
 
 | Category | Exercises |
 | --- | --- |
