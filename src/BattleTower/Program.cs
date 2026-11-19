@@ -125,7 +125,8 @@ public static class Program
         int position = 1;
         foreach (ScoreEntry entry in scores.Top(10))
         {
-            Console.WriteLine($"{position++,2}. {entry.Points,6} pts  {entry.PlayerName,-15} {entry.Enemies,2} enemies  {entry.Date:yyyy-MM-dd HH:mm}");
+            string enemies = entry.Enemies == 1 ? "enemy  " : "enemies";
+            Console.WriteLine($"{position++,2}. {entry.Points,6} pts  {entry.PlayerName,-15} {entry.Enemies,2} {enemies}  {entry.Date:yyyy-MM-dd HH:mm}");
         }
     }
 

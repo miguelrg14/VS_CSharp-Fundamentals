@@ -127,7 +127,7 @@ public sealed class TowerRun
         AttackResult result = Player.Attack(CurrentEnemy, kind);
         if (!result.Performed)
         {
-            log.Add($"You are too tired for a {actionName} (it costs {Player.CostOf(kind)} energy, you have {Player.Energy}). Try resting.");
+            log.Add($"You are too tired for {(kind == AttackKind.Physical ? "an" : "a")} {actionName} (it costs {Player.CostOf(kind)} energy, you have {Player.Energy}). Try resting.");
             return false;
         }
 
